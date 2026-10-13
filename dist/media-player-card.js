@@ -9,11 +9,13 @@ const FEATURE = Object.freeze({
   NEXT_TRACK: 32,
   TURN_ON: 128,
   TURN_OFF: 256,
+  PLAY_MEDIA: 512,
   SELECT_SOURCE: 2048,
   STOP: 4096,
   PLAY: 16384,
   SHUFFLE_SET: 32768,
   REPEAT_SET: 262144,
+  BROWSE_MEDIA: 131072,
 });
 
 const SCHEMA = [
@@ -34,6 +36,7 @@ const STYLE = `
   .progress-wrap{margin-top:19px}.progress-line{display:flex;align-items:center;gap:9px;color:var(--secondary-text-color);font-size:9px;font-variant-numeric:tabular-nums}.progress-line input{flex:1;min-width:0}.range{height:5px;margin:0;appearance:none;border:0;border-radius:999px;background:linear-gradient(90deg,var(--accent) var(--range-progress,0%),color-mix(in srgb,var(--secondary-text-color) 18%,transparent) var(--range-progress,0%));cursor:pointer}.range::-webkit-slider-thumb{width:13px;height:13px;appearance:none;border:2px solid #fff;border-radius:50%;background:var(--accent);box-shadow:0 1px 5px rgba(30,34,65,.26)}.range::-moz-range-thumb{width:10px;height:10px;border:2px solid #fff;border-radius:50%;background:var(--accent);box-shadow:0 1px 5px rgba(30,34,65,.26)}
   .controls{display:flex;align-items:center;justify-content:center;gap:clamp(9px,3vw,17px);margin-top:17px}.control{display:grid;place-items:center;width:39px;height:39px;flex:none;border:1px solid color-mix(in srgb,var(--divider-color) 65%,transparent);border-radius:14px;background:color-mix(in srgb,var(--card-background-color,#fff) 86%,var(--accent));color:var(--primary-text-color);cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}.control ha-icon{--mdc-icon-size:20px}.control:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 15px rgba(70,69,130,.15)}.control:focus-visible,select:focus-visible,input:focus-visible,.more:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.control:disabled{opacity:.42;cursor:not-allowed}.control.primary{width:49px;height:49px;border:0;border-radius:17px;background:linear-gradient(145deg,#8d78f5,#6c6fe5 62%,#48b8bc);box-shadow:0 8px 18px rgba(111,103,222,.25);color:white}.control.primary ha-icon{--mdc-icon-size:24px}.control.power{margin-left:auto;color:var(--accent)}.volume-row{display:flex;align-items:center;gap:11px;margin-top:17px;padding:11px 12px;border:1px solid color-mix(in srgb,var(--divider-color) 52%,transparent);border-radius:15px;background:color-mix(in srgb,var(--card-background-color,#fff) 87%,var(--accent));}.volume-row ha-icon{flex:none;color:var(--secondary-text-color);--mdc-icon-size:18px}.volume-row input{flex:1;min-width:0}.volume-value{width:34px;color:var(--secondary-text-color);font-size:10px;font-variant-numeric:tabular-nums;text-align:right}.volume-row .control{width:31px;height:31px;border-radius:11px}.volume-row .control ha-icon{color:inherit;--mdc-icon-size:17px}
   .more-row{display:flex;justify-content:center;margin-top:11px}.more{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:0;border-radius:9px;background:transparent;color:var(--secondary-text-color);font:inherit;font-size:10px;font-weight:700;cursor:pointer}.more ha-icon{--mdc-icon-size:15px}.advanced{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:12px}.field{display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--secondary-text-color);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.field select{width:100%;min-width:0;padding:9px 10px;border:1px solid color-mix(in srgb,var(--divider-color) 65%,transparent);border-radius:12px;background:var(--card-background-color,#fff);color:var(--primary-text-color);font:inherit;font-size:12px;font-weight:600}.toggle-control{display:flex;align-items:center;gap:8px;min-height:37px;padding:0 11px;border:1px solid color-mix(in srgb,var(--divider-color) 65%,transparent);border-radius:12px;background:color-mix(in srgb,var(--card-background-color,#fff) 88%,var(--accent));color:var(--primary-text-color);font:inherit;font-size:11px;font-weight:700;cursor:pointer}.toggle-control[aria-pressed="true"]{border-color:color-mix(in srgb,var(--accent) 44%,transparent);background:color-mix(in srgb,var(--accent) 12%,var(--card-background-color,#fff));color:var(--accent)}.toggle-control ha-icon{--mdc-icon-size:17px}
+  .browser-toggle{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:39px;padding:0 12px;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--divider-color));border-radius:12px;background:linear-gradient(110deg,color-mix(in srgb,var(--accent) 10%,var(--card-background-color,#fff)),color-mix(in srgb,#40b9ba 9%,var(--card-background-color,#fff)));color:var(--accent);font:inherit;font-size:11px;font-weight:780;cursor:pointer}.browser-toggle ha-icon{--mdc-icon-size:17px}.media-browser{grid-column:1/-1;min-width:0;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 20%,var(--divider-color));border-radius:16px;background:color-mix(in srgb,var(--card-background-color,#fff) 92%,var(--accent))}.browser-heading{display:flex;align-items:center;gap:8px;margin-bottom:9px}.browser-heading strong{min-width:0;flex:1;overflow:hidden;font-size:12px;font-weight:780;text-overflow:ellipsis;white-space:nowrap}.browser-back{display:flex;align-items:center;gap:4px;padding:5px 7px;border:0;border-radius:8px;background:transparent;color:var(--secondary-text-color);font:inherit;font-size:10px;font-weight:700;cursor:pointer}.browser-back ha-icon{--mdc-icon-size:16px}.browser-filter{width:100%;box-sizing:border-box;margin-bottom:8px;padding:9px 10px;border:1px solid color-mix(in srgb,var(--divider-color) 65%,transparent);border-radius:10px;background:var(--card-background-color,#fff);color:var(--primary-text-color);font:inherit;font-size:12px}.browser-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));gap:7px;max-height:260px;overflow-y:auto;overscroll-behavior:contain;padding:1px}.browser-item{display:flex;align-items:center;gap:9px;min-width:0;min-height:40px;padding:7px 9px;border:1px solid color-mix(in srgb,var(--divider-color) 48%,transparent);border-radius:11px;background:var(--ha-card-background,var(--card-background-color,#fff));color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}.browser-item:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 38%,var(--divider-color));box-shadow:0 4px 12px rgba(67,68,120,.1)}.browser-item ha-icon{flex:none;color:var(--accent);--mdc-icon-size:18px}.browser-item span{min-width:0;overflow:hidden;font-size:11px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}.browser-message{padding:12px 4px;color:var(--secondary-text-color);font-size:11px;text-align:center}
   .off-state,.empty-state{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:20px;padding:15px;border:1px solid color-mix(in srgb,var(--divider-color) 55%,transparent);border-radius:18px;background:color-mix(in srgb,var(--card-background-color,#fff) 88%,var(--accent))}.off-copy{min-width:0}.off-title{font-size:14px;font-weight:760}.off-hint{margin-top:4px;color:var(--secondary-text-color);font-size:11px}.turn-on{display:flex;align-items:center;gap:7px;padding:10px 13px;border:0;border-radius:13px;background:linear-gradient(145deg,#8d78f5,#626fe3 70%,#42b5b9);box-shadow:0 5px 13px rgba(102,100,211,.22);color:#fff;font:inherit;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer}.turn-on ha-icon{--mdc-icon-size:17px}.error{margin-top:10px;color:var(--error-color,#bd4e4e);font-size:11px}.setup{padding:20px;color:var(--secondary-text-color);font:inherit;font-size:13px;font-weight:500}
   @media(max-width:390px){.shell{padding:15px}.now-playing{grid-template-columns:72px minmax(0,1fr);gap:12px;margin-top:18px}.artwork{border-radius:17px}.controls{gap:9px}.control{width:36px;height:36px}.control.primary{width:46px;height:46px}.volume-row{gap:8px;padding:9px}.advanced{grid-template-columns:1fr 1fr}}
   @media(hover:hover){.turn-on:hover{filter:brightness(1.06);transform:translateY(-1px)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
@@ -76,6 +79,14 @@ class MediaPlayerCard extends HTMLElement {
 
   setConfig(config) {
     if (!config || typeof config !== "object") throw new Error("Provide a valid Media Player Card configuration.");
+    if (this._config?.entity !== config.entity) {
+      this._browserOpen = false;
+      this._browserPath = [];
+      this._browserItems = [];
+      this._browserFilter = "";
+      this._browserLoading = false;
+      this._browserError = null;
+    }
     this._config = { show_artwork: true, ...config };
     this._entitySignature = null;
     this._root ??= this.attachShadow({ mode: "open" });
@@ -124,6 +135,26 @@ class MediaPlayerCard extends HTMLElement {
       this.render();
       return;
     }
+    if (action === "browser-toggle") {
+      this._browserOpen = !this._browserOpen;
+      this._browserPath = [];
+      this._browserFilter = "";
+      if (this._browserOpen) this._loadBrowser();
+      else this.render();
+      return;
+    }
+    if (action === "browser-back") {
+      this._browserPath = (this._browserPath || []).slice(0, -1);
+      this._browserFilter = "";
+      const path = this._browserPath.at(-1);
+      this._loadBrowser(path?.media_content_id, path?.media_content_type);
+      return;
+    }
+    if (action === "browser-item") {
+      const item = this._browserItems?.[Number(button.dataset.index)];
+      if (item) this._selectBrowserItem(item);
+      return;
+    }
     if (!entity) return;
     const attrs = entity.attributes || {};
     const actions = {
@@ -159,6 +190,15 @@ class MediaPlayerCard extends HTMLElement {
 
   _handleInput(event) {
     const target = event.target;
+    if (target instanceof HTMLInputElement && target.dataset.action === "browser-filter") {
+      const start = target.selectionStart;
+      this._browserFilter = target.value;
+      this._renderBrowserInPlace();
+      const input = this._root.querySelector('[data-action="browser-filter"]');
+      input?.focus();
+      input?.setSelectionRange(start, start);
+      return;
+    }
     if (target instanceof HTMLInputElement && target.type === "range") {
       const min = Number(target.min || 0);
       const max = Number(target.max || 100);
@@ -188,17 +228,102 @@ class MediaPlayerCard extends HTMLElement {
 
   _renderAdvanced(entity, disabled) {
     const attrs = entity.attributes || {};
+    const deviceClass = attrs.device_class || "media player";
     const supportsSource = featureSupported(entity, FEATURE.SELECT_SOURCE) && Array.isArray(attrs.source_list) && attrs.source_list.length > 0;
     const supportsShuffle = featureSupported(entity, FEATURE.SHUFFLE_SET);
     const supportsRepeat = featureSupported(entity, FEATURE.REPEAT_SET);
-    if (!supportsSource && !supportsShuffle && !supportsRepeat) return "";
+    const supportsBrowse = featureSupported(entity, FEATURE.BROWSE_MEDIA);
+    const supportsPlayMedia = featureSupported(entity, FEATURE.PLAY_MEDIA);
+    if (!supportsSource && !supportsShuffle && !supportsRepeat && !supportsBrowse) return "";
     const expandButton = `<div class="more-row"><button class="more" type="button" data-action="expand" aria-expanded="${Boolean(this._expanded)}"><ha-icon icon="${this._expanded ? "mdi:chevron-up" : "mdi:tune-variant"}"></ha-icon>${this._expanded ? "Fewer controls" : "More controls"}</button></div>`;
     if (!this._expanded) return expandButton;
     const source = supportsSource ? `<label class="field">Input source<select data-action="source"${disabled ? " disabled" : ""}>${attrs.source_list.map((item) => `<option value="${escapeHtml(item)}"${item === attrs.source ? " selected" : ""}>${escapeHtml(item)}</option>`).join("")}</select></label>` : "";
     const shuffle = supportsShuffle ? `<button class="toggle-control" type="button" data-action="shuffle" aria-pressed="${Boolean(attrs.shuffle)}"${disabled ? " disabled" : ""}><ha-icon icon="mdi:shuffle"></ha-icon>Shuffle ${attrs.shuffle ? "On" : "Off"}</button>` : "";
     const repeatLabel = { off: "Off", all: "All", one: "One" }[attrs.repeat] || "Off";
     const repeat = supportsRepeat ? `<button class="toggle-control" type="button" data-action="repeat" aria-label="Repeat ${repeatLabel}. Activate to change mode" title="Change repeat mode"><ha-icon icon="${attrs.repeat === "one" ? "mdi:repeat-once" : "mdi:repeat"}"></ha-icon>Repeat ${repeatLabel}</button>` : "";
-    return `${expandButton}<div class="advanced">${source}${shuffle}${repeat}</div>`;
+    const browse = supportsBrowse ? `<button class="browser-toggle" type="button" data-action="browser-toggle" aria-expanded="${Boolean(this._browserOpen)}"><ha-icon icon="mdi:${deviceClass === "tv" ? "apps" : "folder-music"}"></ha-icon>${deviceClass === "tv" ? "Browse apps & channels" : "Browse media"}</button>` : "";
+    return `${expandButton}<div class="advanced">${source}${shuffle}${repeat}${browse}${this._renderBrowser(supportsPlayMedia)}</div>`;
+  }
+
+  async _loadBrowser(mediaContentId, mediaContentType) {
+    if (!this._hass || !this._config?.entity) return;
+    this._browserLoading = true;
+    this._browserError = null;
+    this.render();
+    try {
+      const response = await this._hass.callWS({
+        type: "media_player/browse_media",
+        entity_id: this._config.entity,
+        ...(mediaContentId ? { media_content_id: mediaContentId } : {}),
+        ...(mediaContentType ? { media_content_type: mediaContentType } : {}),
+      });
+      this._browserItems = Array.isArray(response?.children) ? response.children : [];
+      this._browserTitle = response?.title || "Browse media";
+    } catch {
+      this._browserItems = [];
+      this._browserError = "Could not load this media library.";
+    } finally {
+      this._browserLoading = false;
+      this.render();
+    }
+  }
+
+  async _selectBrowserItem(item) {
+    if (item.can_expand) {
+      this._browserPath.push({ title: item.title, media_content_id: item.media_content_id, media_content_type: item.media_content_type });
+      this._browserFilter = "";
+      await this._loadBrowser(item.media_content_id, item.media_content_type);
+      return;
+    }
+    const mediaClass = String(item.media_class || "").toLowerCase();
+    const isAppOrChannel = mediaClass === "app" || mediaClass === "channel";
+    if (!this.entity || !featureSupported(this.entity, FEATURE.PLAY_MEDIA) || (!item.can_play && !isAppOrChannel)) return;
+    this._actionError = null;
+    try {
+      await this._hass.callService("media_player", "play_media", {
+        entity_id: this._config.entity,
+        media: {
+          media_content_id: item.media_content_id,
+          media_content_type: item.media_content_type,
+        },
+      });
+      this._browserMessage = `Opening ${item.title}…`;
+    } catch {
+      this._browserError = `Could not open ${item.title}.`;
+    }
+    this.render();
+  }
+
+  _renderBrowser(supportsPlayMedia) {
+    if (!this._browserOpen) return "";
+    const path = this._browserPath || [];
+    const title = path.at(-1)?.title || this._browserTitle || "Browse media";
+    const filter = escapeHtml(this._browserFilter || "");
+    const items = this._browserItems || [];
+    const query = String(this._browserFilter || "").trim().toLocaleLowerCase();
+    const visibleItems = items.map((item, index) => ({ item, index })).filter(({ item }) => !query || String(item.title || "").toLocaleLowerCase().includes(query));
+    let content;
+    if (this._browserLoading) content = `<div class="browser-message">Loading…</div>`;
+    else if (this._browserError) content = `<div class="browser-message" role="alert">${escapeHtml(this._browserError)}</div>`;
+    else if (!visibleItems.length) content = `<div class="browser-message">${items.length ? "No matches." : "Nothing to show here."}</div>`;
+    else content = `<div class="browser-items">${visibleItems.map(({ item, index }) => {
+      const mediaClass = String(item.media_class || "").toLowerCase();
+      const icon = item.can_expand ? "folder-outline" : mediaClass === "app" ? "application" : mediaClass === "channel" ? "television-classic" : "play-circle-outline";
+      const canSelect = item.can_expand || supportsPlayMedia && (item.can_play || mediaClass === "app" || mediaClass === "channel");
+      return `<button class="browser-item" type="button" data-action="browser-item" data-index="${index}"${canSelect ? "" : " disabled"} aria-label="${escapeHtml(item.title)}"><ha-icon icon="mdi:${icon}"></ha-icon><span>${escapeHtml(item.title)}</span></button>`;
+    }).join("")}</div>`;
+    const back = path.length ? `<button class="browser-back" type="button" data-action="browser-back"><ha-icon icon="mdi:arrow-left"></ha-icon>Back</button>` : "";
+    const search = items.length > 8 ? `<input class="browser-filter" type="search" data-action="browser-filter" value="${filter}" placeholder="Search ${escapeHtml(title.toLocaleLowerCase())}" aria-label="Search ${escapeHtml(title)}">` : "";
+    const message = this._browserMessage ? `<div class="browser-message" role="status">${escapeHtml(this._browserMessage)}</div>` : "";
+    return `<section class="media-browser" aria-label="Media browser"><div class="browser-heading">${back}<strong>${escapeHtml(title)}</strong><button class="browser-back" type="button" data-action="browser-toggle" aria-label="Close browser"><ha-icon icon="mdi:close"></ha-icon></button></div>${search}${content}${message}</section>`;
+  }
+
+  _renderBrowserInPlace() {
+    const old = this._root.querySelector(".media-browser");
+    if (!old) return;
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = this._renderBrowser(featureSupported(this.entity, FEATURE.PLAY_MEDIA));
+    old.replaceWith(wrapper.firstElementChild);
   }
 
   render() {
@@ -267,4 +392,4 @@ if (!window.customCards.some((card) => card.type === CARD_TYPE)) {
   window.customCards.push({ type: CARD_TYPE, name: "Media Player Card", description: "A colorful, capability-aware Home Assistant media player card.", preview: true, documentationURL: "https://github.com/Liionboy/media-player-card" });
 }
 
-console.info("%c MEDIA-PLAYER-CARD %c v1.0.0 ", "color:#fff;background:#756ce5;font-weight:bold", "color:#756ce5;background:#eef0ff;font-weight:bold");
+console.info("%c MEDIA-PLAYER-CARD %c v1.1.0 ", "color:#fff;background:#756ce5;font-weight:bold", "color:#756ce5;background:#eef0ff;font-weight:bold");

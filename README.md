@@ -8,7 +8,8 @@ A polished, responsive Lovelace card for Home Assistant `media_player` entities.
 - Capability-aware transport controls: play/pause, previous/next, stop, and power.
 - Volume slider and mute, shown only when supported by the selected player.
 - Seek bar when the player exposes a duration and seek support.
-- Optional advanced controls for source selection, shuffle, and repeat.
+- Optional advanced controls for source selection, shuffle, repeat, and media browsing.
+- Browse and launch apps, channels, and other media when the player exposes `BROWSE_MEDIA` and `PLAY_MEDIA`; large catalogs have a built-in search field.
 - Responsive styling, keyboard-accessible controls, reduced-motion support, and a configurable artwork toggle.
 - No device IDs or entity names are hard-coded; configure any `media_player` entity in the card editor or YAML.
 
@@ -31,7 +32,7 @@ entity: media_player.living_room_player
 # show_artwork: true
 ```
 
-Replace the example entity with any of your own `media_player` entities. Controls are shown only when the entity advertises the corresponding feature. In particular, source selection requires both `source_list` and the `SELECT_SOURCE` feature; seeking requires `SEEK` and a positive `media_duration`.
+Replace the example entity with any of your own `media_player` entities. Controls are shown only when the entity advertises the corresponding feature. In particular, source selection requires both `source_list` and the `SELECT_SOURCE` feature; seeking requires `SEEK` and a positive `media_duration`. Media browsing uses Home Assistant's `media_player/browse_media` WebSocket API. Selecting a supported item sends `media_player.play_media` with the item's media ID and content type. Browse controls appear only when the entity supports `BROWSE_MEDIA`; playable items require `PLAY_MEDIA`.
 
 ## Development
 
