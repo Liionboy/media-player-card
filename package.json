@@ -1,0 +1,9 @@
+{
+  "name": "media-player-card",
+  "version": "1.0.0",
+  "type": "module",
+  "private": false,
+  "scripts": {
+    "check": "node --check dist/media-player-card.js"
+  }
+}

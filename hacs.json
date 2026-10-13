@@ -1,0 +1,6 @@
+{
+  "name": "Media Player Card",
+  "filename": "media-player-card.js",
+  "render_readme": true,
+  "homeassistant": "2026.6.0"
+}
