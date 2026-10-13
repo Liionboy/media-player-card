@@ -11,6 +11,7 @@ A polished, responsive Lovelace card for Home Assistant `media_player` entities.
 - Optional advanced controls for source selection, shuffle, repeat, and media browsing.
 - Browse and launch apps, channels, and other media when the player exposes `BROWSE_MEDIA` and `PLAY_MEDIA`; large catalogs have a built-in search field.
 - Responsive styling, keyboard-accessible controls, reduced-motion support, and a configurable artwork toggle.
+- Press and hold an empty area of the card for More Info; interactive controls are not affected.
 - No device IDs or entity names are hard-coded; configure any `media_player` entity in the card editor or YAML.
 
 ## Install with HACS

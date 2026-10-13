@@ -47,6 +47,40 @@ function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
 }
 
+function attachMoreInfoHold(root, host, getEntityId) {
+  let timer;
+  let start;
+  let lastOpenedAt = 0;
+  const interactive = (event) => event.composedPath().some((node) => node instanceof HTMLElement && node.matches("button,input,select,textarea,a,[role='button'],[contenteditable='true']"));
+  const open = (entityId) => {
+    if (!entityId) return;
+    lastOpenedAt = Date.now();
+    host.dispatchEvent(new CustomEvent("hass-more-info", { bubbles: true, composed: true, detail: { entityId } }));
+  };
+  const cancel = () => { clearTimeout(timer); timer = undefined; start = undefined; };
+  root.addEventListener("pointerdown", (event) => {
+    cancel();
+    if (event.button !== 0 || interactive(event)) return;
+    const entityId = getEntityId(event);
+    if (!entityId) return;
+    start = { x: event.clientX, y: event.clientY };
+    timer = window.setTimeout(() => { timer = undefined; open(entityId); }, 550);
+  });
+  root.addEventListener("pointermove", (event) => {
+    if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 12) cancel();
+  });
+  ["pointerup", "pointercancel"].forEach((type) => root.addEventListener(type, cancel));
+  root.addEventListener("pointerout", (event) => {
+    if (!(event.relatedTarget instanceof Node) || !root.contains(event.relatedTarget)) cancel();
+  });
+  root.addEventListener("contextmenu", (event) => {
+    if (interactive(event)) return;
+    event.preventDefault();
+    cancel();
+    if (Date.now() - lastOpenedAt > 750) open(getEntityId(event));
+  });
+}
+
 function featureSupported(entity, flag) {
   return (Number(entity?.attributes?.supported_features) & flag) === flag;
 }
@@ -95,6 +129,7 @@ class MediaPlayerCard extends HTMLElement {
       this._root.addEventListener("click", (event) => this._handleClick(event));
       this._root.addEventListener("change", (event) => this._handleChange(event));
       this._root.addEventListener("input", (event) => this._handleInput(event));
+      attachMoreInfoHold(this._root, this, () => this._config?.entity);
       this._listenersAttached = true;
     }
     this.render();
